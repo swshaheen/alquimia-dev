@@ -61,6 +61,7 @@ module PFLOTRANAlquimiaInterface_module
   use Option_module, only : option_type
   use Reaction_Aux_module, only : reaction_rt_type
   use Reaction_Base_module, only : reaction_base_type
+  use Reaction_Sandbox_Base_class, only : reaction_sandbox_base_type
   use Reactive_Transport_Aux_module, only : reactive_transport_auxvar_type
   use Global_Aux_module, only : global_auxvar_type
   use Material_Aux_module, only : material_auxvar_type
@@ -116,6 +117,7 @@ module PFLOTRANAlquimiaInterface_module
      logical :: hands_off
      type(option_type), pointer :: option
      class(reaction_rt_type), pointer :: reaction
+     class(reaction_sandbox_base_type) :: rxn_sandbox_list
      type(reactive_transport_auxvar_type), pointer :: rt_auxvar
      type(global_auxvar_type), pointer :: global_auxvar
      type(material_auxvar_type), pointer :: material_auxvar
@@ -175,6 +177,7 @@ subroutine Setup(input_filename, hands_off, pft_engine_state, sizes, &
   PetscBool :: option_found
   character(len=kAlquimiaMaxStringLength) :: string
   class(reaction_rt_type), pointer :: reaction
+  class(reaction_sandbox_base_type) :: rxn_sandbox_list
   type(option_type), pointer :: option
   type(input_type), pointer :: input
   type(global_auxvar_type), pointer :: global_auxvar
@@ -264,6 +267,7 @@ subroutine Setup(input_filename, hands_off, pft_engine_state, sizes, &
   engine_state%hands_off = hands_off
   engine_state%option => option
   engine_state%reaction => reaction
+  engine_state%rxn_sandbox_list => rxn_sandbox_list
   engine_state%rt_auxvar => rt_auxvar
   engine_state%global_auxvar => global_auxvar
   engine_state%material_auxvar => material_auxvar
