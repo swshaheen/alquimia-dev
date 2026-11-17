@@ -177,6 +177,7 @@ module AlquimiaContainers_module
      type (AlquimiaVectorDouble) :: secondary_free_ion_concentration
      type (AlquimiaVectorDouble) :: secondary_activity_coeff
      type (AlquimiaVectorDouble) :: gas_partial_pressure
+     type (AlquimiaVectorDouble) :: total_sorbed_surface_complex
   end type AlquimiaAuxiliaryOutputData
 
   type, public, bind(c) :: AlquimiaAqueousConstraint

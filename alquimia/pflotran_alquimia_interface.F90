@@ -617,6 +617,8 @@ subroutine GetAuxiliaryOutput( &
 
   ! pflotran
   use Reaction_Mineral_module, only : RMineralSaturationIndex
+  use Reaction_Surface_Complexation_Aux_module, only : &
+       surface_complexation_type
 
   implicit none
 
@@ -630,7 +632,9 @@ subroutine GetAuxiliaryOutput( &
 
   ! local variables
   type(PFLOTRANEngineState), pointer :: engine_state
+  type(surface_complexation_type), pointer :: surface_complexation
   integer :: i, ph_index
+  integer :: icplx, icomp, k
   real (c_double), pointer :: local_array(:)
   PetscReal :: porosity, volume
   logical, parameter :: copy_auxdata = .true.
@@ -723,6 +727,37 @@ subroutine GetAuxiliaryOutput( &
   do i = 1, aux_output%secondary_activity_coeff%size
      local_array(i) = engine_state%rt_auxvar%sec_act_coef(i)
   end do
+
+  !
+  ! total sorbed on equilibrium surface complexation sites, by primary
+  ! species [mol/m^3 bulk]. This is the surface complexation part of
+  ! rt_auxvar%total_sorb_eq (i.e. of state%total_immobile): the sum over
+  ! surface complexes of stoichiometry * complex concentration, exactly as
+  ! accumulated in RTotalSorbEqSurfCplx1(). Like total_sorb_eq, entries can
+  ! be negative for species released when a complex forms (e.g. H+).
+  !
+  ! rt_auxvar%eqsrfcplx_conc is refreshed by RTotalSorb() at the end of
+  ! every RReact() and when a constraint is equilibrated, so it is
+  ! consistent with the total_sorb_eq that was just copied into the state.
+  !
+  if (aux_output%total_sorbed_surface_complex%size > 0) then
+     call c_f_pointer(aux_output%total_sorbed_surface_complex%data, &
+          local_array, (/aux_output%total_sorbed_surface_complex%size/))
+     local_array = 0.d0
+     surface_complexation => engine_state%reaction%surface_complexation
+     if (associated(engine_state%rt_auxvar%eqsrfcplx_conc)) then
+        do icplx = 1, surface_complexation%nsrfcplx
+           do k = 1, surface_complexation%srfcplxspecid(0,icplx)
+              icomp = surface_complexation%srfcplxspecid(k,icplx)
+              if (icomp <= aux_output%total_sorbed_surface_complex%size) then
+                 local_array(icomp) = local_array(icomp) + &
+                      surface_complexation%srfcplxstoich(k,icplx) * &
+                      engine_state%rt_auxvar%eqsrfcplx_conc(icplx)
+              end if
+           end do
+        end do
+     end if
+  end if
 
   !
   ! gas pressure in bars

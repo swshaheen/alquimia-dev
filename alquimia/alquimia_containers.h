@@ -146,6 +146,10 @@ extern "C" {
     AlquimiaVectorDouble secondary_free_ion_concentration; /* [molality] */
     AlquimiaVectorDouble secondary_activity_coeff; /* [-] */
     AlquimiaVectorDouble gas_partial_pressure; /* [-] */
+    /* portion of state.total_immobile held on surface complexation sites,
+       per primary species; sized num_sorbed when there are surface sites,
+       otherwise empty */
+    AlquimiaVectorDouble total_sorbed_surface_complex; /* [moles/m^3 bulk] */
   } AlquimiaAuxiliaryOutputData;
 
   /* 

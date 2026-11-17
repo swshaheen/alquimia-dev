@@ -318,6 +318,10 @@ void AllocateAlquimiaAuxiliaryOutputData(const AlquimiaSizes* const sizes,
   AllocateAlquimiaVectorDouble(sizes->num_gases,
                                &(aux_output->gas_partial_pressure));
 
+  /* only meaningful when the engine has surface complexation sites */
+  AllocateAlquimiaVectorDouble((sizes->num_surface_sites > 0) ? sizes->num_sorbed : 0,
+                               &(aux_output->total_sorbed_surface_complex));
+
 }  /* end AllocateAlquimiaAuxiliaryOutputData() */
 
 void FreeAlquimiaAuxiliaryOutputData(AlquimiaAuxiliaryOutputData* aux_output) {
@@ -330,6 +334,7 @@ void FreeAlquimiaAuxiliaryOutputData(AlquimiaAuxiliaryOutputData* aux_output) {
     FreeAlquimiaVectorDouble(&(aux_output->secondary_free_ion_concentration));
     FreeAlquimiaVectorDouble(&(aux_output->secondary_activity_coeff));
 	FreeAlquimiaVectorDouble(&(aux_output->gas_partial_pressure));
+    FreeAlquimiaVectorDouble(&(aux_output->total_sorbed_surface_complex));
   }
 }  /* end FreeAlquimiaAuxiliaryOutputData() */
 

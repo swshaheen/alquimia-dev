@@ -187,6 +187,7 @@ void CopyAlquimiaAuxiliaryOutputData(const AlquimiaAuxiliaryOutputData* const so
   CopyAlquimiaVectorDouble(&source->secondary_free_ion_concentration, &destination->secondary_free_ion_concentration);
   CopyAlquimiaVectorDouble(&source->secondary_activity_coeff, &destination->secondary_activity_coeff);
   CopyAlquimiaVectorDouble(&source->gas_partial_pressure, &destination->gas_partial_pressure);
+  CopyAlquimiaVectorDouble(&source->total_sorbed_surface_complex, &destination->total_sorbed_surface_complex);
 }
 
 void CopyAlquimiaGeochemicalCondition(const AlquimiaGeochemicalCondition* const source, 
@@ -489,6 +490,8 @@ void PrintAlquimiaAuxiliaryOutputData(const AlquimiaAuxiliaryOutputData* const a
                             &(aux_output->secondary_activity_coeff), file);
   PrintAlquimiaVectorDouble("gas_partial_pressure",
                             &(aux_output->gas_partial_pressure), file);
+  PrintAlquimiaVectorDouble("total sorbed on surface complexation sites",
+                            &(aux_output->total_sorbed_surface_complex), file);
 }  /* end PrintAlquimiaAuxiliaryOutputData() */
 
 void PrintAlquimiaGeochemicalConditionVector(const AlquimiaGeochemicalConditionVector* const condition_list, FILE* file) {
